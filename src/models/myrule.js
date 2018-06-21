@@ -1,101 +1,46 @@
+import moment from 'moment'
+
+import { getLog, getLogState } from '../services/api'
+
 export default {
   namespace: 'myrule',
   state: {
-    data: {
-      list: [
-        {
-          id: 5,
-          time: '2018-06-08 10:11:10',
-          ip: '222.222.222.222',
-          result: '登录成功',
-        },
-        {
-          id: 4,
-          time: '2018-06-08 10:11:10',
-          ip: '222.222.222.222',
-          result: '登录失败',
-        },
-        {
-          id: 3,
-          time: '2018-06-08 10:11:10',
-          ip: '222.222.222.222',
-          result: '登录失败',
-        },
-        {
-          id: 2,
-          time: '2018-06-08 10:11:10',
-          ip: '222.222.222.222',
-          result: '登录失败',
-        },
-        {
-          id: 1,
-          time: '2018-06-08 10:11:10',
-          ip: '222.222.222.222',
-          result: '登录失败',
-        },
-      ],
-      pagination: {},
-    },
+    data: [],
+    pagination: {},
+    stateList: []
   },
   effects: {
-    *log({ payload }, { put }) {
+    *state (_, { call, put} ) {
+      const response = yield call(getLogState)
+      response.unshift({value: -1, label: '全部结果'})
+      yield put({
+        type: 'savestate',
+        payload: response,
+      })
+    },
+    *log({ payload }, { call, put }) {
+      const response = yield call(getLog, payload)
+      response.data.forEach(item => {
+        item.result = item.result === 0 ? '登录失败' : '登录成功'
+        item.time = moment(item.time, 'x').format('LLL')
+      })
       yield put({
         type: 'save',
-        payload: {
-          list: [
-            {
-              id: 7,
-              time: '2018-06-08 10:11:10',
-              ip: '222.222.222.222',
-              result: '登录成功',
-            },
-            {
-              id: 6,
-              time: '2018-06-08 10:11:10',
-              ip: '222.222.222.222',
-              result: '登录成功',
-            },
-            {
-              id: 5,
-              time: '2018-06-08 10:11:10',
-              ip: '222.222.222.222',
-              result: '登录成功',
-            },
-            {
-              id: 4,
-              time: '2018-06-08 10:11:10',
-              ip: '222.222.222.222',
-              result: '登录失败',
-            },
-            {
-              id: 3,
-              time: '2018-06-08 10:11:10',
-              ip: '222.222.222.222',
-              result: '登录失败',
-            },
-            {
-              id: 2,
-              time: '2018-06-08 10:11:10',
-              ip: '222.222.222.222',
-              result: '登录失败',
-            },
-            {
-              id: 1,
-              time: '2018-06-08 10:11:10',
-              ip: '222.222.222.222',
-              result: '登录失败',
-            },
-          ],
-          ...payload,
-        },
+        payload: response,
       });
     },
   },
   reducers: {
+    savestate(state, action) {
+      return {
+        ...state,
+        stateList: action.payload
+      }
+    },
     save(state, action) {
       return {
         ...state,
-        data: action.payload,
+        ...action.payload,
       };
     },
   },

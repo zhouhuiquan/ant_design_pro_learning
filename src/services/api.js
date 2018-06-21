@@ -80,3 +80,14 @@ export async function fakeRegister(params) {
 export async function queryNotices() {
   return request('/api/notices');
 }
+
+export async function getLog(params) {
+  return request('/api/log', {
+    method: 'POST',
+    body: params,
+  })
+}
+
+export async function getLogState() {
+  return request('/api/log/state')
+}

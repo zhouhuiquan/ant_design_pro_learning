@@ -6,6 +6,7 @@ import { getProfileBasicData } from './mock/profile';
 import { getProfileAdvancedData } from './mock/profile';
 import { getNotices } from './mock/notices';
 import { format, delay } from 'roadhog-api-doc';
+import { getLog, getState } from './mock/log'
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
@@ -104,6 +105,8 @@ const proxy = {
     res.send({ status: 'ok', currentAuthority: 'user' });
   },
   'GET /api/notices': getNotices,
+  'POST /api/log': getLog,
+  'GET /api/log/state': getState,
   'GET /api/500': (req, res) => {
     res.status(500).send({
       timestamp: 1513932555104,

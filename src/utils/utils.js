@@ -50,6 +50,15 @@ export function getTimeDistance(type) {
 
     return [moment(`${year}-01-01 00:00:00`), moment(`${year}-12-31 23:59:59`)];
   }
+
+  if (type === 'all') {
+    const now = new Date()
+    now.setHours(23)
+    now.setMinutes(59)
+    now.setSeconds(59)
+    now.setMilliseconds(999)
+    return [moment(0, 'x'), moment(now)]
+  }
 }
 
 export function getPlainNode(nodeList, parentPath = '') {

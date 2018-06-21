@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { DatePicker, Input, Select, Button } from 'antd';
+import moment from 'moment'
 
+import { getTimeDistance } from '../../utils/utils'
 import MyPageHeaderLayout from '../../layouts/MyPageHeaderLayout';
 import MyStandardTable from '../../components/MyStandardTable';
 import styles from './Log.less';
@@ -16,34 +18,80 @@ const { Option } = Select;
 export default class Log extends Component {
   state = {
     IPValue: '',
+    state: -1,
+    date: getTimeDistance('week')
   };
+
+  componentDidMount () {
+    this.props.dispatch({
+      type: 'myrule/state'
+    })
+  }
 
   handleIPChange = e => {
     this.setState({
       IPValue: e.target.value,
     });
   };
+
+  handSelectChange = val => {
+    this.setState({
+      state: val
+    })
+  }
+
+  handlePick = (moment) => {
+    this.setState({
+      date: moment
+    })
+  }
+
   handleSearch = () => {
-    console.log(this.state.IPValue); // eslint-disable-line
     const { dispatch } = this.props;
+    const query = this.state
+    const pagination = {
+      current: 1,
+      pageSize: 10
+    }
+    const dateRange = query.date.map((item, index) => {
+      if (moment.isMoment(item)) {
+        return +(item.format('x'))
+      } else {
+        return 0
+      }
+    })
     dispatch({
       type: 'myrule/log',
-      payload: { flag: '这里是搜索', IPValue: this.state.IPValue },
+      payload: { query: { ...query, date: dateRange }, pagination,  },
     });
   };
 
-  handleStandardTableChange = pagination => {
+  handleStandardTableChange = (pagination) => {
     // console.log(pagination, filtersArg, sorter)
+    const query = this.state
     const { dispatch } = this.props;
+
+    const dateRange = query.date.map((item, index) => {
+      if (moment.isMoment(item)) {
+        return +(item.format('x'))
+      } else {
+        return 0
+      }
+    })
+
     dispatch({
       type: 'myrule/log',
-      payload: pagination,
+      payload: { query: {...query, date: dateRange}, pagination },
     });
   };
 
   render() {
     const { IPValue } = this.state;
-    const { myrule: { data }, loading } = this.props;
+    let { myrule: { data, pagination, stateList }, loading } = this.props;
+    data = {
+      list: data,
+      pagination,
+    }
     const columns = [
       {
         title: 'ID',
@@ -66,12 +114,17 @@ export default class Log extends Component {
         align: 'center',
       },
     ];
+
+    const optionList = stateList.map(item => {
+      return <Option value={item.value} key={item.value}>{item.label}</Option>
+    })
+
     return (
       <div>
         <MyPageHeaderLayout />
         <div className={styles.box}>
           <div className={styles.search}>
-            <RangePicker className={styles.picker} style={{ widht: 200, marginRight: 20 }} />
+            <RangePicker value={this.state.date} className={styles.picker} onChange={this.handlePick} style={{ widht: 200, marginRight: 20 }} />
             <Input
               className={styles.IPInput}
               placeholder="IP地址"
@@ -80,12 +133,10 @@ export default class Log extends Component {
               onChange={this.handleIPChange}
               style={{ marginRight: 20 }}
             />
-            <Select defaultValue="all" style={{ width: 112, marginRight: 20 }}>
-              <Option value="all">全部</Option>
-              <Option value="success">登录成功</Option>
-              <Option value="fail">登录失败</Option>
+            <Select value={this.state.state} onChange={this.handSelectChange} style={{ width: 112, marginRight: 20 }}>
+              {optionList}
             </Select>
-            <Button type="primary" icon="search">
+            <Button type="primary" onClick={this.handleSearch} icon="search">
               搜索
             </Button>
           </div>
