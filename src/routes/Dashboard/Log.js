@@ -19,12 +19,25 @@ export default class Log extends Component {
   state = {
     IPValue: '',
     state: -1,
-    date: getTimeDistance('week')
+    date: []
   };
 
   componentDidMount () {
     this.props.dispatch({
       type: 'myrule/state'
+    })
+    
+    const dateRange = this.state.date.map((item, index) => {
+      if (moment.isMoment(item)) {
+        return +(item.format('x'))
+      } else {
+        return 0
+      }
+    })
+
+    this.props.dispatch({
+      type: 'myrule/log',
+      payload: {query: {...this.state, date: dateRange}, pagination: {pageSize: 10, current: 1}}
     })
   }
 
@@ -47,6 +60,7 @@ export default class Log extends Component {
   }
 
   handleSearch = () => {
+    console.log(this.state.date)
     const { dispatch } = this.props;
     const query = this.state
     const pagination = {
