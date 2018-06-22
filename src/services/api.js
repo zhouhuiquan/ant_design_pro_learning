@@ -91,3 +91,14 @@ export async function getLog(params) {
 export async function getLogState() {
   return request('/api/log/state')
 }
+
+export async function getOrganization() {
+  return request('/api/organization')
+}
+
+export async function getAuditLog(params) {
+  return request('/api/audit/log', {
+    method: 'POST',
+    body: params,
+  })
+}

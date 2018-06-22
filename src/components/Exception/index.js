@@ -29,17 +29,6 @@ const Exception = ({ className, linkElement = 'a', type, title, desc, img, actio
               <Button type="primary">返回首页</Button>
             )}
         </div>
-        <div className={styles.actions}>
-          {actions ||
-            createElement(
-              linkElement,
-              {
-                to: '/',
-                href: '/',
-              },
-              <Button type="primary">返回上一页</Button>
-            )}
-        </div>
       </div>
     </div>
   );

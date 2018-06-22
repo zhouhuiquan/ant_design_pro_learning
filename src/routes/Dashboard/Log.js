@@ -7,6 +7,7 @@ import { getTimeDistance } from '../../utils/utils'
 import MyPageHeaderLayout from '../../layouts/MyPageHeaderLayout';
 import MyStandardTable from '../../components/MyStandardTable';
 import styles from './Log.less';
+import { getLogState } from '../../services/api';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -128,7 +129,7 @@ export default class Log extends Component {
         align: 'center',
       },
     ];
-
+    
     const optionList = stateList.map(item => {
       return <Option value={item.value} key={item.value}>{item.label}</Option>
     })

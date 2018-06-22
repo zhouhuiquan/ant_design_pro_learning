@@ -28,6 +28,17 @@ const menuData = [
     ],
   },
   {
+    name: '审计管理',
+    path: 'audit',
+    icon: 'dashboard',
+    children: [
+      {
+        name: '登录审计',
+        path: 'log'
+      }
+    ]
+  },
+  {
     name: '表单页',
     icon: 'form',
     path: 'form',
