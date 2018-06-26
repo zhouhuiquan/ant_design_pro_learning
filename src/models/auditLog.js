@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import { getOrganization, getLogState, getAuditLog } from '../services/api' 
 
 export default {
@@ -35,14 +37,13 @@ export default {
     },
     *log({ payload }, { call, put }) {
       let response = yield call(getAuditLog, payload)
-      response.list = response.data
-      response.list.forEach(item => {
+      response.data.list.forEach(item => {
         item.result = item.result === 0 ? '登录失败' : '登录成功'
+        item.time = moment(item.time).format('lll')
       })
-      delete response.data
       yield put({
         type: 'save',
-        payload: response,
+        payload: response.data,
       })
     }
   },

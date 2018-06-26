@@ -7,7 +7,7 @@ export default {
   state: {
     data: [],
     pagination: {},
-    stateList: []
+    stateList: [],
   },
   effects: {
     *state (_, { call, put} ) {

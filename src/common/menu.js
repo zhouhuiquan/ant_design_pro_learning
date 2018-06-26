@@ -35,7 +35,11 @@ const menuData = [
       {
         name: '登录审计',
         path: 'log'
-      }
+      },
+      {
+        name: '操作审计',
+        path: 'operation'
+      },
     ]
   },
   {

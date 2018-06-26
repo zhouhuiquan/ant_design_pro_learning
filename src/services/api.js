@@ -102,3 +102,14 @@ export async function getAuditLog(params) {
     body: params,
   })
 }
+
+export async function getAuditOperation(params) {
+  return request('/api/audit/operation', {
+    method: 'POST',
+    body: params,
+  })
+}
+
+export async function getOperationList() {
+  return request('/api/audit/operation-list')
+}

@@ -7,7 +7,7 @@ import { getProfileAdvancedData } from './mock/profile';
 import { getNotices } from './mock/notices';
 import { format, delay } from 'roadhog-api-doc';
 import { getLog, getState } from './mock/log'
-import { organizationData } from './mock/audit';
+import { organizationData, getAuditOperation, getAuditLog } from './mock/audit';
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
@@ -114,7 +114,27 @@ const proxy = {
       data: organizationData,
     })
   },
-  'POST /api/audit/log': getLog,
+  'POST /api/audit/log': getAuditLog,
+  'POST /api/audit/operation': getAuditOperation,
+  'GET /api/audit/operation-list': (res, req) => {
+    req.send({
+      status: 200,
+      data: [
+        {
+          id: 1,
+          label: '新增',
+        },
+        {
+          id: 2,
+          label: '修改',
+        },
+        {
+          id: 3,
+          label: '删除',
+        }
+      ]
+    })
+  },
   'GET /api/500': (req, res) => {
     res.status(500).send({
       timestamp: 1513932555104,
@@ -129,7 +149,7 @@ const proxy = {
       timestamp: 1513932643431,
       status: 404,
       error: 'Not Found',
-      message: 'No message available',
+      message: 'No message availabel',
       path: '/base/category/list/2121212',
     });
   },

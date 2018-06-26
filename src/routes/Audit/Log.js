@@ -11,9 +11,9 @@ const { RangePicker } = DatePicker
 export default class AuditLog extends Component {
   state = {
     query: {
-      userName: '',
+      account: '',
       organization: '',
-      IPValue: '',
+      ip: '',
       date: [],
       state: -1
     },
@@ -38,7 +38,7 @@ export default class AuditLog extends Component {
   }
 
   handleUserNameChange = (e) => {
-    let query = { ...this.state.query, userName: e.target.value }
+    let query = { ...this.state.query, account: e.target.value }
     this.setState({
       query
     })
@@ -52,7 +52,7 @@ export default class AuditLog extends Component {
   }
 
   handleIPChange = (e) => {
-    let query = { ...this.state.query, IPValue: e.target.value }
+    let query = { ...this.state.query, ip: e.target.value }
     this.setState({
       query,
     })
@@ -66,9 +66,12 @@ export default class AuditLog extends Component {
   }
 
   handleResultChange = (value) => {
-    let query = { ...this.state.query, state: value }
+    // let query = { ...this.state.query, state: value }
     this.setState({
-      query,
+      query: {
+        ...this.state.query,
+        state: value
+      }
     })
   }
 
@@ -77,10 +80,9 @@ export default class AuditLog extends Component {
       ...this.state.pagination,
       current: 1
     }
-    let { query } = this.state
     this.props.dispatch({
       type: 'auditLog/log',
-      payload: { query, pagination }
+      payload: { ...this.state, pagination }
     })
   }
 
@@ -102,12 +104,12 @@ export default class AuditLog extends Component {
     const columns = [
       {
         title: '用户名',
-        dataIndex: 'userName',
+        dataIndex: 'account',
         align: 'center',
       },
       {
         title: '姓名',
-        dateIndex: 'name',
+        dataIndex: 'name',
         align: 'center',
       },
       {
@@ -139,7 +141,7 @@ export default class AuditLog extends Component {
           <Cascader options={organizationList} onChange={this.handleOrganizationChange} style={{width: 112, marginRight: 10}} placeholder="请选择机构"></Cascader>
           <Input onChange={this.handleIPChange} onPressEnter={this.handleSearch} className={styles.ip} placeholder="请输入IP地址" />
           <RangePicker onChange={this.handleDatePickerChange} className={styles.date} />
-          <Select defaultValue={-1} onChang={this.handleResultChange} style={{width: 112, marginRight: 10}} >
+          <Select defaultValue={-1} onChange={this.handleResultChange} style={{width: 112, marginRight: 10}} >
             {selectOptionList}
           </Select>
           <Button type="primary" onClick={this.handleSearch} icon="search">搜索</Button>

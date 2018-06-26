@@ -1,5 +1,7 @@
 import moment from 'moment'
 
+import { format0, format24 } from '../src/utils/utils'
+
 const getLog = (req, res) => {
   const dataList = []
   for (let i = 1; i < 255; i++) {
@@ -7,7 +9,7 @@ const getLog = (req, res) => {
       id: i,
       ip: '192.168.' + (255 - i) + '.' + i,
       time: new Date().getTime() -  1000 * 60 * 60 * 36 * i,
-      result: i % 3 === 0 ? 0 : 1
+      result: i % 3 === 0 ? 0 : 1,
     })
   }
   // req.body.pagination = 
@@ -16,8 +18,8 @@ const getLog = (req, res) => {
 
   const queryIP = req.body.query.IPValue
   const queryDate = req.body.query.date
-  const start = +queryDate[0] || 0
-  const end = +queryDate[1] || Date.now()
+  const start = queryDate[0] ? format0(queryDate[0]) : Number.MIN_VALUE
+  const end = queryDate[1] ? format24(queryDate[1]) : Number.MAX_VALUE
   const queryState = req.body.query.state
   
   const queryDataList = dataList.filter(item => {

@@ -177,3 +177,27 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-
 export function isUrl(path) {
   return reg.test(path);
 }
+
+
+export function format0(time) {
+  if (typeof time === 'number') {
+    let date = new Date(time)
+    date.setHours(0)
+    date.setMinutes(0)
+    date.setSeconds(0)
+    date.setMilliseconds(0)
+    return +date
+  }
+}
+
+export function format24(time) {
+  if (typeof time === 'number') {
+    let date = new Date(time)
+    date.setHours(23)
+    date.setMinutes(59)
+    date.setSeconds(59)
+    date.setMilliseconds(999)
+    return +date
+  }
+}
+
