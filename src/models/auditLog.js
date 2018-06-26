@@ -37,13 +37,26 @@ export default {
     },
     *log({ payload }, { call, put }) {
       let response = yield call(getAuditLog, payload)
+      let organizationList = yield call(getOrganization)
+      let list = organizationList.data.reduce((pre, cur) => {
+        return [...pre, ...cur.children]
+      }, [])
+      let organizatioObject = list.reduce((pre, cur) => {
+        pre[cur.value] = cur.label
+        return pre
+      }, {})
       response.data.list.forEach(item => {
         item.result = item.result === 0 ? '登录失败' : '登录成功'
         item.time = moment(item.time).format('lll')
+        item.organization = organizatioObject[item.organization]
       })
       yield put({
         type: 'save',
         payload: response.data,
+      })
+      yield put({
+        type: 'saveOrganization',
+        payload: organizationList
       })
     }
   },

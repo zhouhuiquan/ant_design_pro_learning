@@ -7,7 +7,7 @@ import styles from './Log.less'
 
 const { RangePicker } = DatePicker
 
-@connect(({ auditLog }) => ({ auditLog, }))
+@connect(({ auditLog, loading }) => ({ auditLog, loading: loading.models.auditLog }))
 export default class AuditLog extends Component {
   state = {
     query: {
@@ -25,9 +25,9 @@ export default class AuditLog extends Component {
 
   componentDidMount () {
     const { pagination, query } = this.state
-    this.props.dispatch({
-      type: 'auditLog/organization'
-    })
+    // this.props.dispatch({
+    //   type: 'auditLog/organization'
+    // })
     this.props.dispatch({
       type: 'auditLog/state'
     })
@@ -45,7 +45,7 @@ export default class AuditLog extends Component {
   }
 
   handleOrganizationChange = (value) => {
-    let query = { ...this.state.query, organization: value[value.length - 1] || '' }
+    let query = { ...this.state.query, organization: value }
     this.setState({
       query
     })
@@ -95,7 +95,7 @@ export default class AuditLog extends Component {
   }
 
   render () {
-    const { auditLog: { organizationList, stateList, data }} = this.props
+    const { auditLog: { organizationList, stateList, data }, loading } = this.props
 
     const selectOptionList = stateList.map(item => {
       return <Select.Option value={item.value} key={item.value} >{item.label}</ Select.Option>
@@ -147,7 +147,7 @@ export default class AuditLog extends Component {
           <Button type="primary" onClick={this.handleSearch} icon="search">搜索</Button>
         </Form>
         <div>
-          <MyStandardTable data={data} columns={columns} onChange={this.handleTableChange} />
+          <MyStandardTable data={data} columns={columns} onChange={this.handleTableChange} loading={loading} />
         </div>
       </div>
     )

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'dva'
+import dva from 'dva'
 import { Form, Input, Select, DatePicker, Button, Cascader } from 'antd'
 
 import styles from './Operation.less'
@@ -27,14 +28,14 @@ export default class Operation extends Component {
     }
   }
 
-  componentDidMount() {
-    this.props.dispatch({
+  async componentDidMount() {
+    await this.props.dispatch({
       type: 'auditOperation/operation'
     })
-    this.props.dispatch({
+    await this.props.dispatch({
       type: 'auditLog/organization'
     })
-    this.props.dispatch({
+    await this.props.dispatch({
       type: 'auditOperation/search',
       payload: {
         query: this.state.query,
